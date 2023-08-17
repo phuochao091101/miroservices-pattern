@@ -2,13 +2,11 @@ package com.example.productservice.command.api.controller;
 
 
 import com.example.productservice.command.api.commands.CreateProductCommand;
+import com.example.productservice.command.api.commands.DeleteProductCommand;
 import com.example.productservice.command.api.model.ProductRestModel;
 
 import org.axonframework.commandhandling.gateway.CommandGateway;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.UUID;
 
@@ -34,5 +32,11 @@ public class ProductCommandController {
                         .build();
         String result = commandGateway.sendAndWait(createProductCommand);
         return result;
+    }
+    @DeleteMapping ("/{id}")
+    public String deleteProduct(@PathVariable String id){
+        DeleteProductCommand deleteProductCommand= new DeleteProductCommand(id);
+        commandGateway.sendAndWait(deleteProductCommand);
+        return "delete: "+id;
     }
 }

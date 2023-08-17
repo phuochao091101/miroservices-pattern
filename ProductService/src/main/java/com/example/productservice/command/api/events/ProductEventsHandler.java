@@ -25,7 +25,15 @@ public class ProductEventsHandler {
                 new Product();
         BeanUtils.copyProperties(event,product);
         productRepository.save(product);
-        throw new Exception("Exception Occurred");
+//        throw new Exception("Exception Occurred");
+    }
+
+    @EventHandler
+    public void on(ProductDeletedEvent productDeletedEvent) throws Exception {
+        System.out.println(productDeletedEvent.getProductId());
+        productRepository.deleteById(productDeletedEvent.getProductId());
+        System.out.println("Deleted");
+//        throw new Exception("Exception Deleting Occurred");
     }
 
     @ExceptionHandler
