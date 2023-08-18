@@ -1,5 +1,7 @@
 package com.example.orderservice.command.api.aggregate;
 
+import com.example.commonservice.commands.CompleteOrderCommand;
+import com.example.commonservice.events.OrderCompletedEvent;
 import com.example.orderservice.command.api.command.CreateOrderCommand;
 import com.example.orderservice.command.api.events.OrderCreatedEvent;
 import com.fasterxml.jackson.databind.util.BeanUtil;
@@ -36,5 +38,21 @@ public class OrderAggregate {
         this.quantity=event.getQuantity();
         this.productId= event.getProductId();
         this.addressId= event.getAddressId();
+    }
+    @CommandHandler
+    public void handle(CompleteOrderCommand completeOrderCommand) {
+        //Validate The Command
+        // Publish Order Completed Event
+        OrderCompletedEvent orderCompletedEvent
+                = OrderCompletedEvent.builder()
+                .orderStatus(completeOrderCommand.getOrderStatus())
+                .orderId(completeOrderCommand.getOrderId())
+                .build();
+        AggregateLifecycle.apply(orderCompletedEvent);
+    }
+
+    @EventSourcingHandler
+    public void on(OrderCompletedEvent event) {
+        this.orderStatus = event.getOrderStatus();
     }
 }

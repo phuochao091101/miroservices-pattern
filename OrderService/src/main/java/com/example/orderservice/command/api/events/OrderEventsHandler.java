@@ -1,5 +1,6 @@
 package com.example.orderservice.command.api.events;
 
+import com.example.commonservice.events.OrderCompletedEvent;
 import com.example.orderservice.command.api.data.Order;
 import com.example.orderservice.command.api.data.OrderRepository;
 import org.axonframework.eventhandling.EventHandler;
@@ -20,4 +21,13 @@ public class OrderEventsHandler {
         BeanUtils.copyProperties(event,order);
         orderRepository.save(order);
     }
+    @EventHandler
+    public void on(OrderCompletedEvent event) {
+        Order order= orderRepository.findById(event.getOrderId()).get();
+
+        order.setOrderStatus(event.getOrderStatus());
+
+        orderRepository.save(order);
+    }
+
 }
