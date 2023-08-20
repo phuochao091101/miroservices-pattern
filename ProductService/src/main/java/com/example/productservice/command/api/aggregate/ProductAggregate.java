@@ -2,8 +2,10 @@ package com.example.productservice.command.api.aggregate;
 
 import com.example.productservice.command.api.commands.CreateProductCommand;
 import com.example.productservice.command.api.commands.DeleteProductCommand;
+import com.example.productservice.command.api.commands.UpdateProductCommand;
 import com.example.productservice.command.api.events.ProductCreatedEvent;
 import com.example.productservice.command.api.events.ProductDeletedEvent;
+import com.example.productservice.command.api.events.ProductUpdatedEvent;
 import org.axonframework.spring.stereotype.Aggregate;
 
 import java.math.BigDecimal;
@@ -43,7 +45,14 @@ public class ProductAggregate {
         BeanUtils.copyProperties(deleteProductCommand,productDeletedEvent);
         AggregateLifecycle.apply(productDeletedEvent);
     }
-
+    @CommandHandler
+    public void handle(UpdateProductCommand updateProductCommand) {
+        //You can perform all the validations
+        ProductUpdatedEvent productUpdatedEvent =
+                new ProductUpdatedEvent();
+        BeanUtils.copyProperties(updateProductCommand,productUpdatedEvent);
+        AggregateLifecycle.apply(productUpdatedEvent);
+    }
     public ProductAggregate() {
     }
 
@@ -53,6 +62,13 @@ public class ProductAggregate {
         this.productId = productCreatedEvent.getProductId();
         this.price = productCreatedEvent.getPrice();
         this.name = productCreatedEvent.getName();
+    }
+    @EventSourcingHandler
+    public void on(ProductUpdatedEvent productUpdatedEvent) {
+        this.quantity = productUpdatedEvent.getQuantity();
+        this.productId = productUpdatedEvent.getProductId();
+        this.price = productUpdatedEvent.getPrice();
+        this.name = productUpdatedEvent.getName();
     }
     @EventSourcingHandler
     public void on(ProductDeletedEvent productDeletedEvent) {

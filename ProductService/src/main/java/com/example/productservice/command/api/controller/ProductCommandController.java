@@ -3,6 +3,7 @@ package com.example.productservice.command.api.controller;
 
 import com.example.productservice.command.api.commands.CreateProductCommand;
 import com.example.productservice.command.api.commands.DeleteProductCommand;
+import com.example.productservice.command.api.commands.UpdateProductCommand;
 import com.example.productservice.command.api.model.ProductRestModel;
 
 import org.axonframework.commandhandling.gateway.CommandGateway;
@@ -26,6 +27,19 @@ public class ProductCommandController {
         CreateProductCommand createProductCommand =
                 CreateProductCommand.builder()
                         .productId(UUID.randomUUID().toString())
+                        .name(productRestModel.getName())
+                        .price(productRestModel.getPrice())
+                        .quantity(productRestModel.getQuantity())
+                        .build();
+        String result = commandGateway.sendAndWait(createProductCommand);
+        return result;
+    }
+    @PutMapping()
+    public String updateProduct(@RequestBody ProductRestModel productRestModel) {
+
+        UpdateProductCommand createProductCommand =
+                UpdateProductCommand.builder()
+                        .productId(productRestModel.getProductId())
                         .name(productRestModel.getName())
                         .price(productRestModel.getPrice())
                         .quantity(productRestModel.getQuantity())

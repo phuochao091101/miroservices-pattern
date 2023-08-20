@@ -4,16 +4,17 @@ import com.example.commonservice.commands.CompleteOrderCommand;
 import com.example.commonservice.events.OrderCompletedEvent;
 import com.example.orderservice.command.api.command.CreateOrderCommand;
 import com.example.orderservice.command.api.events.OrderCreatedEvent;
-import com.fasterxml.jackson.databind.util.BeanUtil;
 import org.axonframework.commandhandling.CommandHandler;
 import org.axonframework.eventsourcing.EventSourcingHandler;
+import org.axonframework.modelling.command.AggregateIdentifier;
 import org.axonframework.modelling.command.AggregateLifecycle;
-import org.axonframework.modelling.command.TargetAggregateIdentifier;
+import org.axonframework.spring.stereotype.Aggregate;
 import org.springframework.beans.BeanUtils;
-import org.springframework.context.event.EventListener;
 
+@Aggregate
 public class OrderAggregate {
-    @TargetAggregateIdentifier
+
+    @AggregateIdentifier
     private String orderId;
     private String productId;
     private String userId;
@@ -21,24 +22,29 @@ public class OrderAggregate {
     private Integer quantity;
     private String orderStatus;
 
-    public OrderAggregate(){
-
+    public OrderAggregate() {
     }
+
     @CommandHandler
-    public OrderAggregate(CreateOrderCommand createOrderCommand){
-        OrderCreatedEvent orderCreatedEvent=new OrderCreatedEvent();
-        BeanUtils.copyProperties(createOrderCommand,orderCreatedEvent);
+    public OrderAggregate(CreateOrderCommand createOrderCommand) {
+        //Validate The Command
+        OrderCreatedEvent orderCreatedEvent
+                = new OrderCreatedEvent();
+        BeanUtils.copyProperties(createOrderCommand,
+                orderCreatedEvent);
         AggregateLifecycle.apply(orderCreatedEvent);
     }
+
     @EventSourcingHandler
-    public void on(OrderCreatedEvent event){
-        this.orderStatus= event.getOrderId();
-        this.userId= event.getUserId();
-        this.orderId= event.getOrderId();
-        this.quantity=event.getQuantity();
-        this.productId= event.getProductId();
-        this.addressId= event.getAddressId();
+    public void on(OrderCreatedEvent event) {
+        this.orderStatus = event.getOrderStatus();
+        this.userId = event.getUserId();
+        this.orderId = event.getOrderId();
+        this.quantity = event.getQuantity();
+        this.productId = event.getProductId();
+        this.addressId = event.getAddressId();
     }
+
     @CommandHandler
     public void handle(CompleteOrderCommand completeOrderCommand) {
         //Validate The Command
@@ -55,4 +61,5 @@ public class OrderAggregate {
     public void on(OrderCompletedEvent event) {
         this.orderStatus = event.getOrderStatus();
     }
+
 }
