@@ -2,6 +2,7 @@ package com.example.userservice.projection;
 
 import com.example.commonservice.model.CardDetails;
 import com.example.commonservice.model.User;
+
 import com.example.commonservice.queries.GetUserPaymentDetailsQuery;
 import org.axonframework.queryhandling.QueryHandler;
 import org.springframework.stereotype.Component;

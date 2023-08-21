@@ -1,6 +1,7 @@
 package com.example.userservice.controller;
 
 import com.example.commonservice.model.User;
+
 import com.example.commonservice.queries.GetUserPaymentDetailsQuery;
 import org.axonframework.messaging.responsetypes.ResponseTypes;
 import org.axonframework.queryhandling.QueryGateway;
